@@ -38,6 +38,35 @@ class Helicopter:
         else:
             z = 1
 
+    def get_distance(self, max_distance):
+        if max_distance is None:
+            self.distance = randint(1, 400)
+        else:
+            self.distance = randint(1, max_distance)
+        return self.distance
+
+    def get_number_of_people(self, max_number_of_people):
+        if max_number_of_people is None:
+            self.number_of_people = randint(1, 13)
+        else:
+            self.number_of_people = randint(1, max_number_of_people)
+        return self.number_of_people
+
+    def get_altitude(self, min_altitude, max_altitude):
+        if min_altitude is None:
+            self.altitude = randint(1000, max_altitude)
+        elif max_altitude is None:
+            self.altitude = randint(min_altitude, 25000)
+        else:
+            self.altitude = randint(min_altitude, max_altitude)
+        return self.altitude
+
+    def get_wind_speed(self, wind_speed):
+        if wind_speed is None:
+            self.wind_speed = randint(1, 25)
+        else:
+            self.wind_speed = randint(1, max_speed)
+        return self.wind_speed
 
 class condition:
 
@@ -74,4 +103,5 @@ class condition:
 if __name__ == "__main__":
 
     helicopter_df = pd.read_csv("Helicopter.csv")
-    condition_df = pd.read_csv("Condition.csv")
+    condition_df = pd.read_csv("Conditions_file.csv")
+
