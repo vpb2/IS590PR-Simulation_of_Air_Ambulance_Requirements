@@ -41,7 +41,16 @@ class Helicopter:
 
 class condition:
 
-    def __init__(self):
+    def __init__(self, weather_tendency=None, distance=None, number_of_people=None, altitude=None, wind_speed=None):
+
+        self.distance = distance
+        self.number_of_people = number_of_people
+        self.altitude = altitude
+        self.wind_speed = wind_speed
+
+        self.tendency = None
+        self.randmax = None
+        self.set_weather_tendency(weather_tendency)
 
     def set_weather_tendency(self, t: tuple):
         if t is None:
@@ -55,11 +64,11 @@ class condition:
     def set_weather(self):
         n = randint(1, self.randmax)
         if n <= self.weather_tendency[0]:
-            return 'Winter'
-        elif n <= self.weather_tendency[0] + self.weather_tendency[1]:
-            return 'Rainy'
-        else:
             return 'Summer'
+        elif n <= self.weather_tendency[0] + self.weather_tendency[1]:
+            return 'Winter'
+        else:
+            return 'Rainy'
 
 
 if __name__ == "__main__":
