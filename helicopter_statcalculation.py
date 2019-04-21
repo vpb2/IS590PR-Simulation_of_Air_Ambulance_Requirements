@@ -27,30 +27,73 @@ class Helicopter:
         self.max_distance = max_distance
         self.max_no_people = max_no_people
 
-    def caluclate_time(self, heli):
-
-        weather = set_weather(heli)
-
-        if weather == "Winter":
-            x = 1
-        elif weather == "Rainy":
-            y = 2
+    @staticmethod
+    def get_weather_co_ef(w):
+        if w == "Summer":
+            return 0.96
+        elif w == "Winter":
+            return 1
         else:
-            z = 1
+            return 0.92
+
+    @staticmethod
+    def get_alt_co_ef(a):
+
+        if a < 10000:
+            return 1
+
+        else:
+            return (100 - ((a - 10000)/1000)/100
+
+    @staticmethod
+    def caluclate_time(heli, condition_obj):
+
+        distance = condition.distance
+        max_speed = heli.max_speed
+        weather = condition.weather
+        no_of_ppl = condition.number_of_people
+        altitude = condition.altitude
+        wind_speed = condition.wind_speed
+        wind_direction = condition.wind_direction
+        heli_direction = condition.heli_direction
+
+        weather_co_ef = get_weather_co_ef(weather)
+
+        no_of_ppl_co_ef = (100 - no_of_ppl)/100
+
+        alt_co_ef = get_alt_co_ef(altitude)
+
+        direction_offset = get_relation_between_directions(wind_direction,heli_direction)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class condition:
 
     def __init__(self, weather_tendency=None, distance=None, number_of_people=None, altitude=None, wind_speed=None):
-
         self.distance = distance
         self.number_of_people = number_of_people
         self.altitude = altitude
         self.wind_speed = wind_speed
 
+
         self.tendency = None
         self.randmax = None
         self.set_weather_tendency(weather_tendency)
+
 
     def set_weather_tendency(self, t: tuple):
         if t is None:
