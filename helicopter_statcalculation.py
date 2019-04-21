@@ -12,27 +12,36 @@ Vinu Prasad Bhambore - vpb2@illinois.edu
 """
 
 from random import choice, randint
-
+import pandas as pd
 
 class Helicopter:
 
-    helicopter_count = 0        # Initialize count of all helicopters
     all_helicopter = []         # automatically track all helicopters
 
-    def __init__(self, name=None, weather_tendency=None):
-        Helicopter.helicopter_count += 1
+    def __init__(self, name=None, empty_weight=None, max_speed=None, max_distance=None, max_no_people=None):
         Helicopter.all_helicopter.append(self)
 
-        if name is None:
-            self.name = 'Helicopter {:02}'.format(Helicopter.helicopter_count)
+        self.name = name
+        self.empty_weight = empty_weight
+        self.max_speed = max_speed
+        self.max_distance = max_distance
+        self.max_no_people = max_no_people
+
+    def caluclate_time(self, heli):
+
+        weather = set_weather(heli)
+
+        if weather == "Winter":
+            x = 1
+        elif weather == "Rainy":
+            y = 2
         else:
-            self.name = name
+            z = 1
 
-        self.weather_tendency = None
-        self.randmax = None
-        self.set_weather_tendency(weather_tendency)
 
-        self.wins = 0
+class condition:
+
+    def __init__(self):
 
     def set_weather_tendency(self, t: tuple):
         if t is None:
@@ -52,14 +61,8 @@ class Helicopter:
         else:
             return 'Summer'
 
-    def caluclate_time(self, heli):
 
-        weather = set_weather(heli)
+if __name__ == "__main__":
 
-        if weather == "Winter":
-            x = 1
-        elif weather == "Rainy":
-            y = 2
-        else:
-            z = 1
-
+    helicopter_df = pd.read_csv("Helicopter.csv")
+    condition_df = pd.read_csv("Condition.csv")
