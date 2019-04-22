@@ -16,16 +16,20 @@ import pandas as pd
 
 
 class Helicopter:
-    all_helicopter = []  # automatically track all helicopters
+    all_helicopters = []  # automatically track all helicopters
 
     def __init__(self, name=None, empty_weight=None, max_speed=None, max_distance=None, max_no_people=None):
-        Helicopter.all_helicopter.append(self)
+        Helicopter.all_helicopters.append(self)
 
         self.name = name
         self.empty_weight = empty_weight
         self.max_speed = max_speed
         self.max_distance = max_distance
         self.max_no_people = max_no_people
+        self.win_count = 0
+
+    def record_play(self):
+        self.win_count += 1
 
     @staticmethod
     def get_weather_co_ef(w):
@@ -80,10 +84,17 @@ class Helicopter:
 
         return time
 
+    @staticmethod
+    def get_winner_heli(time_dict):
+        winner = sorted(time_dict.items())[0][0]
 
 class Condition:
 
+    all_conditions = []
+
     def __init__(self, weather_tendency=None):
+        Condition.all_conditions.append(self)
+
         self.distance = None
         self.number_of_people = None
         self.altitude = None
@@ -162,9 +173,46 @@ class Condition:
         self.get_helicopter_direction()
         self.get_weather()
 
-
 if __name__ == "__main__":
 
     helicopter_df = pd.read_csv("Helicopter.csv")
     condition_df = pd.read_csv("Conditions_file.csv")
+
+    heli_obj_list = []
+    condition_obj_list = []
+
+    for h in range(len(helicopter_df)):
+        heli_obj_list[h] = Helicopter(helicopter_df.iloc[h]['Name'], helicopter_df.iloc[h]['Empty_Weight(lbs)'],
+                              helicopter_df.iloc[h]['Max_Speed(mph)'],
+                              helicopter_df.iloc[h]['Max_Distance(miles)'], helicopter_df.iloc[h]['Max_no_of_people'])
+
+    for c in range(len(condition_df)):
+        condition_obj_list[c] = Condition(condition_df.iloc[c]['Weather_Tendency'])
+
+    flag =True
+
+    while flag == True:
+
+        no_of_iters = int(input("Please enter the number of simulations to be run: "))
+
+        for conds in Condition.all_conditions:
+            for iters in range(1,no_of_iters):
+                conds.get_values_conditions()
+                heli_time_dict = {}
+                for heli in Helicopter.all_helicopters:
+                    time = heli.caluclate_time(heli, conds)
+                    heli_time_dict[heli.name] = time
+                winner_heli = Helicopter.get_winner_heli(heli_time_dict)
+
+                for heli in Helicopter.all_helicopters:
+                    if heli.name == winner_heli:
+                        heli.record_play()
+
+            for heli in Helicopter.all_helicopters:
+                print(heli.name, heli.win_count)
+
+
+
+
+
 
