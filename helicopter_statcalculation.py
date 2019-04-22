@@ -181,26 +181,25 @@ if __name__ == "__main__":
     helicopter_df = pd.read_csv("Input_Helicopter_new.csv")
     condition_df = pd.read_csv("Conditions_file.csv")
 
-    heli_obj_list = []
-    condition_obj_list = []
-
     for h in range(0,len(helicopter_df)):
-        heli_obj_list[h] = Helicopter(helicopter_df.iloc[h]['Name'], helicopter_df.iloc[h]['Empty_Weight(lbs)'],
-                              helicopter_df.iloc[h]['Max_Speed(mph)'],
-                              helicopter_df.iloc[h]['Max_Distance(miles)'], helicopter_df.iloc[h]['Max_no_of_people'])
+        Helicopter(helicopter_df.iloc[h]['Name'], helicopter_df.iloc[h]['Empty_Weight(lbs)'],
+                   helicopter_df.iloc[h]['Max_Speed(mph)'],
+                   helicopter_df.iloc[h]['Max_Distance(miles)'], helicopter_df.iloc[h]['Max_no_of_people'])
 
     for c in range(len(condition_df)):
-        condition_obj_list[c] = Condition(condition_df.iloc[c]['Weather_Tendency'])
+        tendency = tuple((condition_df.iloc[c]['Weather_Tendency']).split('-'))
+        Condition(tendency)
 
-    flag =True
-
-    while flag == True:
+    while True:
 
         no_of_iters = int(input("Please enter the number of simulations to be run: "))
 
+        if no_of_iters == 0:
+            break
+
         for conds in Condition.all_conditions:
             i = 0
-            for iters in range(1,no_of_iters):
+            for iters in range(no_of_iters):
                 conds.get_values_conditions(condition_df.iloc[i]['Distance'], condition_df[i]['Number_of_People'],
                                             condition_df.iloc[i]['MinAltitude'], condition_df.iloc[i]['MaxAltitude'],
                                             condition_df.iloc[i]['Wind_Speed'])
