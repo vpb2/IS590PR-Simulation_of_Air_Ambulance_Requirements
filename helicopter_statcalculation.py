@@ -69,13 +69,13 @@ class Helicopter:
         wind_direction = condition_obj.wind_direction
         heli_direction = condition_obj.heli_direction
 
-        weather_co_ef = get_weather_co_ef(weather)
+        weather_co_ef = heli.get_weather_co_ef(weather)
 
         no_of_ppl_co_ef = (100 - no_of_ppl) / 100
 
-        alt_co_ef = get_alt_co_ef(altitude)
+        alt_co_ef = heli.get_alt_co_ef(altitude)
 
-        direction_offset = get_relation_between_directions(wind_direction, heli_direction)
+        direction_offset = heli.get_relation_between_directions(wind_direction, heli_direction)
         wind_speed_co_ef = direction_offset * wind_speed / 100
 
         speed = (max_speed * no_of_ppl_co_ef * alt_co_ef * weather_co_ef) + wind_speed_co_ef
@@ -175,13 +175,13 @@ class Condition:
 
 if __name__ == "__main__":
 
-    helicopter_df = pd.read_csv("Helicopter.csv")
+    helicopter_df = pd.read_csv("Input_Helicopter_new.csv")
     condition_df = pd.read_csv("Conditions_file.csv")
 
     heli_obj_list = []
     condition_obj_list = []
 
-    for h in range(len(helicopter_df)):
+    for h in range(0,len(helicopter_df)):
         heli_obj_list[h] = Helicopter(helicopter_df.iloc[h]['Name'], helicopter_df.iloc[h]['Empty_Weight(lbs)'],
                               helicopter_df.iloc[h]['Max_Speed(mph)'],
                               helicopter_df.iloc[h]['Max_Distance(miles)'], helicopter_df.iloc[h]['Max_no_of_people'])
@@ -196,8 +196,11 @@ if __name__ == "__main__":
         no_of_iters = int(input("Please enter the number of simulations to be run: "))
 
         for conds in Condition.all_conditions:
+            i = 0
             for iters in range(1,no_of_iters):
-                conds.get_values_conditions()
+                conds.get_values_conditions(condition_df.iloc[i]['Distance'], condition_df[i]['Number_of_People'],
+                                            condition_df.iloc[i]['MinAltitude'], condition_df.iloc[i]['MaxAltitude'],
+                                            condition_df.iloc[i]['Wind_Speed'])
                 heli_time_dict = {}
                 for heli in Helicopter.all_helicopters:
                     time = heli.caluclate_time(heli, conds)
@@ -210,6 +213,8 @@ if __name__ == "__main__":
 
             for heli in Helicopter.all_helicopters:
                 print(heli.name, heli.win_count)
+
+            i += 1
 
 
 
