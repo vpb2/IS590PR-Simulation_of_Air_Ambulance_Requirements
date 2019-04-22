@@ -90,6 +90,7 @@ class Condition:
         self.wind_speed = None
         self.wind_direction = None
         self.helicopter_direction = None
+        self.weather = None
 
         self.tendency = None
         self.randmax = None
@@ -107,41 +108,39 @@ class Condition:
     def get_weather(self):
         n = randint(1, self.randmax)
         if n <= self.weather_tendency[0]:
-            return 'Summer'
+            self.weather = 'Summer'
         elif n <= self.weather_tendency[0] + self.weather_tendency[1]:
-            return 'Winter'
+            self.weather = 'Winter'
         else:
-            return 'Rainy'
+            self.weather = 'Rainy'
 
     def get_distance(self, max_distance):
         if max_distance is None:
             self.distance = randint(1, 400)
         else:
             self.distance = randint(1, max_distance)
-        return self.distance
 
     def get_number_of_people(self, max_number_of_people):
         if max_number_of_people is None:
-            self.number_of_people = randint(1, 13)
+            self.number_of_people = randint(1, 10)
         else:
             self.number_of_people = randint(1, max_number_of_people)
-        return self.number_of_people
 
     def get_altitude(self, min_altitude, max_altitude):
-        if min_altitude is None:
+        if min_altitude is None and max_altitude is None:
+            self.altitude = randint(1000, 25000)
+        elif min_altitude is None:
             self.altitude = randint(1000, max_altitude)
         elif max_altitude is None:
             self.altitude = randint(min_altitude, 25000)
         else:
             self.altitude = randint(min_altitude, max_altitude)
-        return self.altitude
 
-    def get_wind_speed(self, wind_speed):
-        if wind_speed is None:
+    def get_wind_speed(self, max_wind_speed):
+        if max_wind_speed is None:
             self.wind_speed = randint(1, 25)
         else:
-            self.wind_speed = randint(1, max_speed)
-        return self.wind_speed
+            self.wind_speed = randint(1, max_wind_speed)
 
     def get_wind_direction(self):
         directions = ['N', 'S', 'W', 'E']
@@ -153,14 +152,15 @@ class Condition:
         d = randint(0, 4)
         self.helicopter_direction = directions[d]
 
-    def get_values_conditions(self, distance, max_number_of_people, min_altitude, max_altitude, wind_speed):
-        self.get_distance(distance)
+    def get_values_conditions(self, max_distance, max_number_of_people, min_altitude, max_altitude, wind_speed):
+        self.get_distance(max_distance)
         self.get_number_of_people(max_number_of_people)
         self.get_altitude(min_altitude, max_altitude)
         self.get_wind_speed(wind_speed)
 
         self.get_wind_direction()
         self.get_helicopter_direction()
+        self.get_weather()
 
 
 if __name__ == "__main__":
