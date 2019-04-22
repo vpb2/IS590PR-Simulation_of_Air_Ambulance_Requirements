@@ -14,6 +14,7 @@ Vinu Prasad Bhambore - vpb2@illinois.edu
 from random import choice, randint
 import pandas as pd
 
+
 class Helicopter:
     all_helicopter = []  # automatically track all helicopters
 
@@ -80,13 +81,15 @@ class Helicopter:
         return time
 
 
-class condition:
+class Condition:
 
-    def __init__(self, weather_tendency=None, distance=None, number_of_people=None, altitude=None, wind_speed=None):
-        self.distance = distance
-        self.number_of_people = number_of_people
-        self.altitude = altitude
-        self.wind_speed = wind_speed
+    def __init__(self, weather_tendency=None):
+        self.distance = None
+        self.number_of_people = None
+        self.altitude = None
+        self.wind_speed = None
+        self.wind_direction = None
+        self.helicopter_direction = None
 
         self.tendency = None
         self.randmax = None
@@ -101,7 +104,7 @@ class condition:
         s, w, r = self.weather_tendency
         self.randmax = s + w + r
 
-    def set_weather(self):
+    def get_weather(self):
         n = randint(1, self.randmax)
         if n <= self.weather_tendency[0]:
             return 'Summer'
@@ -139,6 +142,26 @@ class condition:
         else:
             self.wind_speed = randint(1, max_speed)
         return self.wind_speed
+
+    def get_wind_direction(self):
+        directions = ['N', 'S', 'W', 'E']
+        d = randint(0, 4)
+        self.wind_direction = directions[d]
+
+    def get_helicopter_direction(self):
+        directions = ['N', 'S', 'W', 'E']
+        d = randint(0, 4)
+        self.helicopter_direction = directions[d]
+
+    def get_values_conditions(self, distance, max_number_of_people, min_altitude, max_altitude, wind_speed):
+        self.get_distance(distance)
+        self.get_number_of_people(max_number_of_people)
+        self.get_altitude(min_altitude, max_altitude)
+        self.get_wind_speed(wind_speed)
+
+        self.get_wind_direction()
+        self.get_helicopter_direction()
+
 
 if __name__ == "__main__":
 
