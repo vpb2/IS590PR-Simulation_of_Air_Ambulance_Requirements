@@ -66,7 +66,6 @@ class Helicopter:
         direction_offset = get_relation_between_directions(wind_direction,heli_direction)
 
 
-
 class condition:
 
     def __init__(self, weather_tendency=None, distance=None, number_of_people=None, altitude=None, wind_speed=None):
@@ -75,11 +74,9 @@ class condition:
         self.altitude = altitude
         self.wind_speed = wind_speed
 
-
         self.tendency = None
         self.randmax = None
         self.set_weather_tendency(weather_tendency)
-
 
     def set_weather_tendency(self, t: tuple):
         if t is None:
@@ -128,7 +125,6 @@ class condition:
         else:
             self.wind_speed = randint(1, max_speed)
         return self.wind_speed
-
 
 if __name__ == "__main__":
 
