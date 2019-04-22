@@ -53,7 +53,7 @@ class Helicopter:
             return -5
 
     @staticmethod
-    def caluclate_time(heli, condition_obj):
+    def calculate_time(heli, condition_obj):
 
         distance = condition.distance
         max_speed = heli.max_speed
@@ -78,7 +78,6 @@ class Helicopter:
         time = distance / speed
 
         return time
-
 
 class condition:
 
