@@ -87,6 +87,8 @@ class Helicopter:
     @staticmethod
     def get_winner_heli(time_dict):
         winner = sorted(time_dict.items())[0][0]
+        return winner
+
 
 class Condition:
 
@@ -173,6 +175,7 @@ class Condition:
         self.get_helicopter_direction()
         self.get_weather()
 
+
 if __name__ == "__main__":
 
     helicopter_df = pd.read_csv("Input_Helicopter_new.csv")
@@ -215,9 +218,3 @@ if __name__ == "__main__":
                 print(heli.name, heli.win_count)
 
             i += 1
-
-
-
-
-
-
