@@ -55,14 +55,14 @@ class Helicopter:
     @staticmethod
     def caluclate_time(heli, condition_obj):
 
-        distance = condition.distance
+        distance = condition_obj.distance
         max_speed = heli.max_speed
-        weather = condition.weather
-        no_of_ppl = condition.number_of_people
-        altitude = condition.altitude
-        wind_speed = condition.wind_speed
-        wind_direction = condition.wind_direction
-        heli_direction = condition.heli_direction
+        weather = condition_obj.weather
+        no_of_ppl = condition_obj.number_of_people
+        altitude = condition_obj.altitude
+        wind_speed = condition_obj.wind_speed
+        wind_direction = condition_obj.wind_direction
+        heli_direction = condition_obj.heli_direction
 
         weather_co_ef = get_weather_co_ef(weather)
 
@@ -71,9 +71,9 @@ class Helicopter:
         alt_co_ef = get_alt_co_ef(altitude)
 
         direction_offset = get_relation_between_directions(wind_direction, heli_direction)
-        wind_speed_co_ef = 100 + direction_offset
+        wind_speed_co_ef = direction_offset * wind_speed / 100
 
-        speed = max_speed * no_of_ppl_co_ef * alt_co_ef * wind_speed_co_ef * weather_co_ef
+        speed = (max_speed * no_of_ppl_co_ef * alt_co_ef * weather_co_ef) + wind_speed_co_ef
 
         time = distance / speed
 
