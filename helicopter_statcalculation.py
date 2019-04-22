@@ -38,12 +38,20 @@ class Helicopter:
 
     @staticmethod
     def get_alt_co_ef(a):
-
         if a < 10000:
             return 1
-
         else:
-            return (100 - ((a - 10000)/1000)/100
+            return (100 - ((a - 10000)/1000))/100
+
+    @staticmethod
+    def get_relation_between_directions(wd,hd):
+        if wd == hd:
+            return 10
+        elif (wd == 'N' and hd == 'S') or (wd == 'S' and hd == 'N') or (wd == 'E' and hd == 'W') or (wd == 'W' and hd == 'E'):
+            return -10
+        else:
+            return -5
+
 
     @staticmethod
     def caluclate_time(heli, condition_obj):
@@ -64,22 +72,13 @@ class Helicopter:
         alt_co_ef = get_alt_co_ef(altitude)
 
         direction_offset = get_relation_between_directions(wind_direction,heli_direction)
+        wind_speed_co_ef = 100 + direction_offset
 
+        speed = max_speed * no_of_ppl_co_ef * alt_co_ef * wind_speed_co_ef * weather_co_ef
 
+        time = distance/speed
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return time
 
 class condition:
 
