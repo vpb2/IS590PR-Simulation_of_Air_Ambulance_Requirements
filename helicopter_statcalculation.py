@@ -34,11 +34,11 @@ class Helicopter:
     @staticmethod
     def get_weather_co_ef(w):
         if w == "Summer":
-            return 0.96
+            return 0.95
         elif w == "Winter":
             return 1
         else:
-            return 0.92
+            return 0.90
 
     @staticmethod
     def get_alt_co_ef(a):
@@ -50,10 +50,10 @@ class Helicopter:
     @staticmethod
     def get_relation_between_directions(wd, hd):
         if wd == hd:
-            return 10
+            return 15
         elif (wd == 'N' and hd == 'S') or (wd == 'S' and hd == 'N') or (wd == 'E' and hd == 'W') or (
                 wd == 'W' and hd == 'E'):
-            return -10
+            return -25
         else:
             return -5
 
