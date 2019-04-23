@@ -67,7 +67,7 @@ class Helicopter:
         altitude = condition_obj.altitude
         wind_speed = condition_obj.wind_speed
         wind_direction = condition_obj.wind_direction
-        heli_direction = condition_obj.heli_direction
+        heli_direction = condition_obj.helicopter_direction
 
         weather_co_ef = heli.get_weather_co_ef(weather)
 
@@ -82,11 +82,19 @@ class Helicopter:
 
         time = distance / speed
 
+        print(max_speed, no_of_ppl_co_ef, alt_co_ef, weather_co_ef, wind_speed_co_ef)
+        print(distance)
+        print(speed)
+        print(time)
+        print("\n")
+
         return time
 
     @staticmethod
     def get_winner_heli(time_dict):
-        winner = sorted(time_dict.items())[0][0]
+
+        print(sorted(time_dict.items()))
+        winner = sorted(time_dict.items()[0][0], reverse=True)
         return winner
 
 
@@ -116,13 +124,16 @@ class Condition:
             self.weather_tendency = t
 
         s, w, r = self.weather_tendency
+        s = int(s)
+        w = int(w)
+        r = int(r)
         self.randmax = s + w + r
 
     def get_weather(self):
         n = randint(1, self.randmax)
-        if n <= self.weather_tendency[0]:
+        if n <= int(self.weather_tendency[0]):
             self.weather = 'Summer'
-        elif n <= self.weather_tendency[0] + self.weather_tendency[1]:
+        elif n <= int(self.weather_tendency[0]) + int(self.weather_tendency[1]):
             self.weather = 'Winter'
         else:
             self.weather = 'Rainy'
@@ -157,12 +168,12 @@ class Condition:
 
     def get_wind_direction(self):
         directions = ['N', 'S', 'W', 'E']
-        d = randint(0, 4)
+        d = randint(0, 3)
         self.wind_direction = directions[d]
 
     def get_helicopter_direction(self):
         directions = ['N', 'S', 'W', 'E']
-        d = randint(0, 4)
+        d = randint(0, 3)
         self.helicopter_direction = directions[d]
 
     def get_values_conditions(self, max_distance, max_number_of_people, min_altitude, max_altitude, wind_speed):
@@ -187,7 +198,7 @@ if __name__ == "__main__":
                    helicopter_df.iloc[h]['Max_Distance(miles)'], helicopter_df.iloc[h]['Max_no_of_people'])
 
     for c in range(len(condition_df)):
-        tendency = tuple((condition_df.iloc[c]['Weather_Tendency']).split('-'))
+        tendency = tuple(condition_df.iloc[c]['Weather_Tendency'].split('-'))
         Condition(tendency)
 
     while True:
@@ -200,14 +211,18 @@ if __name__ == "__main__":
         for conds in Condition.all_conditions:
             i = 0
             for iters in range(no_of_iters):
-                conds.get_values_conditions(condition_df.iloc[i]['Distance'], condition_df[i]['Number_of_People'],
+
+                conds.get_values_conditions(condition_df.iloc[i]['Distance'], condition_df.iloc[i]['Number_of_People'],
                                             condition_df.iloc[i]['MinAltitude'], condition_df.iloc[i]['MaxAltitude'],
                                             condition_df.iloc[i]['Wind_Speed'])
                 heli_time_dict = {}
                 for heli in Helicopter.all_helicopters:
-                    time = heli.caluclate_time(heli, conds)
+                    time = Helicopter.caluclate_time(heli, conds)
                     heli_time_dict[heli.name] = time
-                winner_heli = Helicopter.get_winner_heli(heli_time_dict)
+                print("\n")
+
+                sorted_heli_dict = sorted(heli_time_dict.items(), key=lambda x: x[1])
+                winner_heli = sorted_heli_dict[0][0]
 
                 for heli in Helicopter.all_helicopters:
                     if heli.name == winner_heli:
@@ -217,3 +232,5 @@ if __name__ == "__main__":
                 print(heli.name, heli.win_count)
 
             i += 1
+
+
