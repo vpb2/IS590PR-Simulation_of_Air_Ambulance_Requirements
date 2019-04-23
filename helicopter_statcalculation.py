@@ -34,18 +34,18 @@ class Helicopter:
     @staticmethod
     def get_weather_co_ef(w):
         if w == "Summer":
-            return 0.95
+            return 0.05
         elif w == "Winter":
-            return 1
+            return 0
         else:
-            return 0.90
+            return 0.1
 
     @staticmethod
     def get_alt_co_ef(a):
         if a < 10000:
-            return 1
+            return 0
         else:
-            return (100 - ((a - 10000) / 1000)) / 100
+            return ((a - 10000) / 1000) / 100
 
     @staticmethod
     def get_relation_between_directions(wd, hd):
@@ -69,24 +69,18 @@ class Helicopter:
         wind_direction = condition_obj.wind_direction
         heli_direction = condition_obj.helicopter_direction
 
-        weather_co_ef = heli.get_weather_co_ef(weather)
+        weather_co_ef = heli.get_weather_co_ef(weather) * heli.max_speed
 
-        no_of_ppl_co_ef = (100 - no_of_ppl) / 100
+        no_of_ppl_co_ef = heli.max_speed * (2 * no_of_ppl) / 100
 
-        alt_co_ef = heli.get_alt_co_ef(altitude)
+        alt_co_ef = heli.get_alt_co_ef(altitude) * heli.max_speed
 
         direction_offset = heli.get_relation_between_directions(wind_direction, heli_direction)
-        wind_speed_co_ef = direction_offset * wind_speed / 100
+        wind_speed_co_ef = ((direction_offset * wind_speed / 100)/ (heli.empty_weight / 15000)) * 2
 
-        speed = (max_speed * no_of_ppl_co_ef * alt_co_ef * weather_co_ef) + wind_speed_co_ef
+        speed = max_speed - no_of_ppl_co_ef - alt_co_ef - weather_co_ef + wind_speed_co_ef
 
         time = distance / speed
-
-        print(max_speed, no_of_ppl_co_ef, alt_co_ef, weather_co_ef, wind_speed_co_ef)
-        print(distance)
-        print(speed)
-        print(time)
-        print("\n")
 
         return time
 
@@ -96,6 +90,10 @@ class Helicopter:
         print(sorted(time_dict.items()))
         winner = sorted(time_dict.items()[0][0], reverse=True)
         return winner
+
+    def reset_values(self):
+
+        self.win_count = 0
 
 
 class Condition:
@@ -203,7 +201,7 @@ if __name__ == "__main__":
 
     while True:
 
-        no_of_iters = int(input("Please enter the number of simulations to be run: "))
+        no_of_iters = int(input("\nPlease enter the number of simulations to be run: "))
 
         if no_of_iters == 0:
             break
@@ -219,7 +217,6 @@ if __name__ == "__main__":
                 for heli in Helicopter.all_helicopters:
                     time = Helicopter.caluclate_time(heli, conds)
                     heli_time_dict[heli.name] = time
-                print("\n")
 
                 sorted_heli_dict = sorted(heli_time_dict.items(), key=lambda x: x[1])
                 winner_heli = sorted_heli_dict[0][0]
@@ -232,5 +229,10 @@ if __name__ == "__main__":
                 print(heli.name, heli.win_count)
 
             i += 1
+
+        for heli in Helicopter.all_helicopters:
+
+            heli.reset_values()
+
 
 
