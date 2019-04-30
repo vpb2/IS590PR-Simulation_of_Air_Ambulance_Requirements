@@ -15,7 +15,6 @@ from random import randint
 import pandas as pd
 import math
 
-
 class Helicopter:
     all_helicopters = []  # automatically track all helicopters
 
