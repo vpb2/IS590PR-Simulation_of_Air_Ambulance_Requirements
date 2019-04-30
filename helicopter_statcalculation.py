@@ -11,7 +11,7 @@ Vinu Prasad Bhambore - vpb2@illinois.edu
 
 """
 
-from random import choice, randint
+from random import randint
 import pandas as pd
 
 
@@ -76,7 +76,7 @@ class Helicopter:
         alt_co_ef = heli.get_alt_co_ef(altitude) * heli.max_speed
 
         direction_offset = heli.get_relation_between_directions(wind_direction, heli_direction)
-        wind_speed_co_ef = ((direction_offset * wind_speed / 100)/ (heli.empty_weight / 15000)) * 2
+        wind_speed_co_ef = ((direction_offset * wind_speed / 100)/ (heli.empty_weight / 18000)) * 2
 
         speed = max_speed - no_of_ppl_co_ef - alt_co_ef - weather_co_ef + wind_speed_co_ef
 
@@ -94,6 +94,10 @@ class Helicopter:
     def reset_values(self):
 
         self.win_count = 0
+
+    def print_values(self, no_of_iters):
+        win_percentage = self.win_count/no_of_iters
+        print("%25s %10s %15s" % (self.name, self.win_count, round(win_percentage*100, 2)))
 
 
 class Condition:
@@ -206,8 +210,8 @@ if __name__ == "__main__":
         if no_of_iters == 0:
             break
 
+        i = 0
         for conds in Condition.all_conditions:
-            i = 0
             for iters in range(no_of_iters):
 
                 conds.get_values_conditions(condition_df.iloc[i]['Distance'], condition_df.iloc[i]['Number_of_People'],
@@ -225,14 +229,29 @@ if __name__ == "__main__":
                     if heli.name == winner_heli:
                         heli.record_play()
 
+            print("\nThe condition looks as follows - ")
+            print("Weather Tendency - ", condition_df.iloc[i]["Weather_Tendency"], ", Max distance - ",
+                  condition_df.iloc[i]['Distance'], ", Max number of people - ",
+                  condition_df.iloc[i]['Number_of_People'], ", Minimum Altitude of location - ",
+                  condition_df.iloc[i]['MinAltitude'], ", Maximum Altitude of location - ",
+                  condition_df.iloc[i]['MaxAltitude'], ", Max Wind Speed of location - ",
+                  condition_df.iloc[i]['Wind_Speed'])
+
+            print("\nThe helicopter statistics are - ")
+            print("--------------------------------------------------------")
+            print("%25s %10s %15s %%" % ("Name", "Wins", "Win Percentage"))
+            print("--------------------------------------------------------")
             for heli in Helicopter.all_helicopters:
-                print(heli.name, heli.win_count)
+                heli.print_values(no_of_iters)
+
+            print("--------------------------------------------------------")
+
+            for heli in Helicopter.all_helicopters:
+                heli.reset_values()
 
             i += 1
 
-        for heli in Helicopter.all_helicopters:
 
-            heli.reset_values()
 
 
 
