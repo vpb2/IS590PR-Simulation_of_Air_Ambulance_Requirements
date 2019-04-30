@@ -251,13 +251,13 @@ if __name__ == "__main__":
                   condition_df.iloc[i]['Wind_Speed'])
 
             print("\nThe helicopter statistics are - ")
-            print("--------------------------------------------------------")
+            print("---------------------------------------------------------")
             print("%25s %10s %15s %%" % ("Name", "Wins", "Win Percentage"))
-            print("--------------------------------------------------------")
+            print("---------------------------------------------------------")
             for heli in Helicopter.all_helicopters:
                 heli.print_values(no_of_iters)
 
-            print("--------------------------------------------------------")
+            print("---------------------------------------------------------")
 
             for heli in Helicopter.all_helicopters:
                 heli.reset_values()
