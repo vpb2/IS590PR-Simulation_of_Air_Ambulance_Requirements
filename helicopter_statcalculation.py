@@ -13,6 +13,7 @@ Vinu Prasad Bhambore - vpb2@illinois.edu
 
 from random import randint
 import pandas as pd
+import math
 
 
 class Helicopter:
@@ -58,12 +59,20 @@ class Helicopter:
             return -5
 
     @staticmethod
+    def get_no_of_trips(heli_no_of_ppl, cond_max_no_of_ppl):
+
+        trips = math.ceil(cond_max_no_of_ppl/heli_no_of_ppl)
+
+        return trips
+
+
+    @staticmethod
     def caluclate_time(heli, condition_obj):
 
         distance = condition_obj.distance
         max_speed = heli.max_speed
         weather = condition_obj.weather
-        no_of_ppl = condition_obj.number_of_people
+        cond_max_no_of_ppl = condition_obj.number_of_people
         altitude = condition_obj.altitude
         wind_speed = condition_obj.wind_speed
         wind_direction = condition_obj.wind_direction
@@ -71,7 +80,7 @@ class Helicopter:
 
         weather_co_ef = heli.get_weather_co_ef(weather) * heli.max_speed
 
-        no_of_ppl_co_ef = heli.max_speed * (2 * no_of_ppl) / 100
+        no_of_ppl_co_ef = heli.max_speed * (2 * cond_max_no_of_ppl) / 100
 
         alt_co_ef = heli.get_alt_co_ef(altitude) * heli.max_speed
 
@@ -82,7 +91,12 @@ class Helicopter:
 
         time = distance / speed
 
-        return time
+        trips = heli.get_no_of_trips(heli.max_no_people, cond_max_no_of_ppl)
+
+        if trips == 1:
+            return time
+        else:
+            return trips * time
 
     @staticmethod
     def get_winner_heli(time_dict):
@@ -146,11 +160,11 @@ class Condition:
         else:
             self.distance = randint(1, max_distance)
 
-    def get_number_of_people(self, max_number_of_people):
-        if max_number_of_people is None:
+    def get_number_of_people(self, number_of_people):
+        if number_of_people is None:
             self.number_of_people = randint(1, 10)
         else:
-            self.number_of_people = randint(1, max_number_of_people)
+            self.number_of_people = randint(1, number_of_people)
 
     def get_altitude(self, min_altitude, max_altitude):
         if min_altitude is None and max_altitude is None:
@@ -178,9 +192,9 @@ class Condition:
         d = randint(0, 3)
         self.helicopter_direction = directions[d]
 
-    def get_values_conditions(self, max_distance, max_number_of_people, min_altitude, max_altitude, wind_speed):
+    def get_values_conditions(self, max_distance, number_of_people, min_altitude, max_altitude, wind_speed):
         self.get_distance(max_distance)
-        self.get_number_of_people(max_number_of_people)
+        self.get_number_of_people(number_of_people)
         self.get_altitude(min_altitude, max_altitude)
         self.get_wind_speed(wind_speed)
 
