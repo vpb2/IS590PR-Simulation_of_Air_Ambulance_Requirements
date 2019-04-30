@@ -13,13 +13,22 @@ Vinu Prasad Bhambore - vpb2@illinois.edu
 
 from random import randint
 import pandas as pd
-import math
 
 
 class Helicopter:
+
     all_helicopters = []  # automatically track all helicopters
 
     def __init__(self, name=None, empty_weight=None, max_speed=None, max_distance=None, max_no_people=None):
+        '''
+        initializes all the parameters for the class helicopter
+        :param name: Name of the helicopter
+        :param empty_weight: Empty weight of the helicopter
+        :param max_speed: Maximum speed the helicopter can traverse at
+        :param max_distance: Maximmum distance the helicopter can cover
+        :param max_no_people: Maximum number of people the helicopter can carry
+        '''
+
         Helicopter.all_helicopters.append(self)
 
         self.name = name
@@ -30,10 +39,18 @@ class Helicopter:
         self.win_count = 0
 
     def record_play(self):
+        '''
+        Increases the win count to keep a track of the wins of every helicopter
+        '''
         self.win_count += 1
 
     @staticmethod
     def get_weather_co_ef(w):
+        '''
+        Calculates the weather coefficient for every weather to be used in  speed calculation
+        :param w: Indicates the weather which can be summer, rainy or winter
+        :return: Returns the weather coefficient used in speed calculation depending on the weather
+        '''
         if w == "Summer":
             return 0.05
         elif w == "Winter":
@@ -43,6 +60,11 @@ class Helicopter:
 
     @staticmethod
     def get_alt_co_ef(a):
+        '''
+        Calculates the altitude coefficient for every helicopter
+        :param a: Indicates the altitude of the helicopter
+        :return: Returns the altitude coefficient used in speed calculation depending on the value of the altitude
+        '''
         if a < 10000:
             return 0
         else:
@@ -50,6 +72,12 @@ class Helicopter:
 
     @staticmethod
     def get_relation_between_directions(wd, hd):
+        '''
+        Checks for the relationship between the speed of the helicopter and speed of thw wind
+        :param wd: Indicates the direction of wind
+        :param hd: Indicates the direction of the helicopter
+        :return: Returns the direction coefficient depending on the wind and the helicopter direction
+        '''
         if wd == hd:
             return 15
         elif (wd == 'N' and hd == 'S') or (wd == 'S' and hd == 'N') or (wd == 'E' and hd == 'W') or (
@@ -59,20 +87,18 @@ class Helicopter:
             return -5
 
     @staticmethod
-    def get_no_of_trips(heli_no_of_ppl, cond_max_no_of_ppl):
-
-        trips = math.ceil(cond_max_no_of_ppl/heli_no_of_ppl)
-
-        return trips
-
-
-    @staticmethod
     def caluclate_time(heli, condition_obj):
+        '''
+        Calculates the time taken by the helicopter
+        :param heli: Instance of the class helicopter
+        :param condition_obj: Condition object from the conditions file
+        :return: Returns the time taken by the helicopter using speed and distance
+        '''
 
         distance = condition_obj.distance
         max_speed = heli.max_speed
         weather = condition_obj.weather
-        cond_max_no_of_ppl = condition_obj.number_of_people
+        no_of_ppl = condition_obj.number_of_people
         altitude = condition_obj.altitude
         wind_speed = condition_obj.wind_speed
         wind_direction = condition_obj.wind_direction
@@ -80,7 +106,7 @@ class Helicopter:
 
         weather_co_ef = heli.get_weather_co_ef(weather) * heli.max_speed
 
-        no_of_ppl_co_ef = heli.max_speed * (2 * cond_max_no_of_ppl) / 100
+        no_of_ppl_co_ef = heli.max_speed * (2 * no_of_ppl) / 100
 
         alt_co_ef = heli.get_alt_co_ef(altitude) * heli.max_speed
 
@@ -91,25 +117,31 @@ class Helicopter:
 
         time = distance / speed
 
-        trips = heli.get_no_of_trips(heli.max_no_people, cond_max_no_of_ppl)
-
-        if trips == 1:
-            return time
-        else:
-            return trips * time
+        return time
 
     @staticmethod
     def get_winner_heli(time_dict):
+        '''
+        Finding the helicopter which won the most number of times by sorting the time dictionary
+        :param time_dict: Indicates the time values calculated from the calculate time function
+        :return: returns the winner which is the fastest performing helicopter
+        '''
 
         print(sorted(time_dict.items()))
         winner = sorted(time_dict.items()[0][0], reverse=True)
         return winner
 
     def reset_values(self):
-
+        '''
+        Resets the value of the win count variable to zero
+        '''
         self.win_count = 0
 
     def print_values(self, no_of_iters):
+        '''
+        Prints the name of the helicopter and their win count and win percentage respectively
+        :param no_of_iters: indicates the number of iterations or simulations the user wants to perform
+        '''
         win_percentage = self.win_count/no_of_iters
         print("%25s %10s %15s" % (self.name, self.win_count, round(win_percentage*100, 2)))
 
@@ -119,6 +151,9 @@ class Condition:
     all_conditions = []
 
     def __init__(self, weather_tendency=None):
+        '''
+        :param weather_tendency: indicates the tendency of every weather
+        '''
         Condition.all_conditions.append(self)
 
         self.distance = None
@@ -134,6 +169,11 @@ class Condition:
         self.set_weather_tendency(weather_tendency)
 
     def set_weather_tendency(self, t: tuple):
+        '''
+        Generates the inidividual tendencies of the weather
+        :param t: tuple which indicates the weather tendency
+
+        '''
         if t is None:
             self.weather_tendency = (1, 1, 1)
         else:
@@ -146,6 +186,9 @@ class Condition:
         self.randmax = s + w + r
 
     def get_weather(self):
+        '''
+        Indicates the actual weather whether it is summer, rainy or winter
+        '''
         n = randint(1, self.randmax)
         if n <= int(self.weather_tendency[0]):
             self.weather = 'Summer'
@@ -155,18 +198,33 @@ class Condition:
             self.weather = 'Rainy'
 
     def get_distance(self, max_distance):
+        '''
+        Randomly generates distance in the range of maximum distance
+        :param max_distance: maximum distance from the conditions file
+        '''
         if max_distance is None:
             self.distance = randint(1, 400)
         else:
             self.distance = randint(1, max_distance)
 
-    def get_number_of_people(self, number_of_people):
-        if number_of_people is None:
+    def get_number_of_people(self, max_number_of_people):
+        '''
+        Randomly generates integer for maximum number of people
+        :param max_number_of_people: maximum number of people from the conditions file
+
+        '''
+        if max_number_of_people is None:
             self.number_of_people = randint(1, 10)
         else:
-            self.number_of_people = randint(1, number_of_people)
+            self.number_of_people = randint(1, max_number_of_people)
 
     def get_altitude(self, min_altitude, max_altitude):
+        '''
+        Randomly generates an integer for altitude between the minimum and maximum altitude
+        :param min_altitude: minimum altitude at which the helicopter is required to fly from the conditions file
+        :param max_altitude: maximum altitude at which the helicopter is required to fly from the conditions file
+
+        '''
         if min_altitude is None and max_altitude is None:
             self.altitude = randint(1000, 25000)
         elif min_altitude is None:
@@ -177,24 +235,42 @@ class Condition:
             self.altitude = randint(min_altitude, max_altitude)
 
     def get_wind_speed(self, max_wind_speed):
+        '''
+        Randomly generates an integer for wind speed
+        :param max_wind_speed: maximum wind speed from the conditions file
+        '''
         if max_wind_speed is None:
             self.wind_speed = randint(1, 25)
         else:
             self.wind_speed = randint(1, max_wind_speed)
 
     def get_wind_direction(self):
+        '''
+        Randomly genertaes the wind direction
+        '''
         directions = ['N', 'S', 'W', 'E']
         d = randint(0, 3)
         self.wind_direction = directions[d]
 
     def get_helicopter_direction(self):
+        '''
+        Randomly generates the helicopter direction
+        '''
         directions = ['N', 'S', 'W', 'E']
         d = randint(0, 3)
         self.helicopter_direction = directions[d]
 
-    def get_values_conditions(self, max_distance, number_of_people, min_altitude, max_altitude, wind_speed):
+    def get_values_conditions(self, max_distance, max_number_of_people, min_altitude, max_altitude, wind_speed):
+        '''
+        Creates objects of each of the randomly generated function above
+        :param max_distance: maximum distance of the helicopter
+        :param max_number_of_people: maximum number of people that a helicopter can carry
+        :param min_altitude: minimum altitude at which the helicopter can fly
+        :param max_altitude: maximum altitude at which the helicopter can fly
+        :param wind_speed: wind speed of the helicopter
+        '''
         self.get_distance(max_distance)
-        self.get_number_of_people(number_of_people)
+        self.get_number_of_people(max_number_of_people)
         self.get_altitude(min_altitude, max_altitude)
         self.get_wind_speed(wind_speed)
 
