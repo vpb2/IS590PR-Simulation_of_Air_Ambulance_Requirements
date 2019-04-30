@@ -14,7 +14,6 @@ Vinu Prasad Bhambore - vpb2@illinois.edu
 from random import randint
 import pandas as pd
 
-
 class Helicopter:
 
     all_helicopters = []  # automatically track all helicopters
