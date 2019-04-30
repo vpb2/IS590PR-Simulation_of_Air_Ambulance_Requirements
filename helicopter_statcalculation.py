@@ -13,9 +13,9 @@ Vinu Prasad Bhambore - vpb2@illinois.edu
 
 from random import randint
 import pandas as pd
+import math
 
 class Helicopter:
-
     all_helicopters = []  # automatically track all helicopters
 
     def __init__(self, name=None, empty_weight=None, max_speed=None, max_distance=None, max_no_people=None):
@@ -86,6 +86,13 @@ class Helicopter:
             return -5
 
     @staticmethod
+    def get_no_of_trips(heli_no_of_ppl, cond_max_no_of_ppl):
+
+        trips = math.ceil(cond_max_no_of_ppl / heli_no_of_ppl)
+
+        return trips
+
+    @staticmethod
     def caluclate_time(heli, condition_obj):
         '''
         Calculates the time taken by the helicopter
@@ -97,7 +104,7 @@ class Helicopter:
         distance = condition_obj.distance
         max_speed = heli.max_speed
         weather = condition_obj.weather
-        no_of_ppl = condition_obj.number_of_people
+        cond_max_no_of_ppl = condition_obj.number_of_people
         altitude = condition_obj.altitude
         wind_speed = condition_obj.wind_speed
         wind_direction = condition_obj.wind_direction
@@ -105,18 +112,23 @@ class Helicopter:
 
         weather_co_ef = heli.get_weather_co_ef(weather) * heli.max_speed
 
-        no_of_ppl_co_ef = heli.max_speed * (2 * no_of_ppl) / 100
+        no_of_ppl_co_ef = heli.max_speed * (2 * cond_max_no_of_ppl) / 100
 
         alt_co_ef = heli.get_alt_co_ef(altitude) * heli.max_speed
 
         direction_offset = heli.get_relation_between_directions(wind_direction, heli_direction)
-        wind_speed_co_ef = ((direction_offset * wind_speed / 100)/ (heli.empty_weight / 18000)) * 2
+        wind_speed_co_ef = ((direction_offset * wind_speed / 100) / (heli.empty_weight / 18000)) * 2
 
         speed = max_speed - no_of_ppl_co_ef - alt_co_ef - weather_co_ef + wind_speed_co_ef
 
         time = distance / speed
 
-        return time
+        trips = heli.get_no_of_trips(heli.max_no_people, cond_max_no_of_ppl)
+
+        if trips == 1:
+            return time
+        else:
+            return trips * time
 
     @staticmethod
     def get_winner_heli(time_dict):
