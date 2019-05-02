@@ -63,6 +63,13 @@ class Helicopter:
         Calculates the altitude coefficient for every helicopter
         :param a: Indicates the altitude of the helicopter
         :return: Returns the altitude coefficient used in speed calculation depending on the value of the altitude
+
+        >>> h1 = Helicopter("Kamov KA-52", 10000, 180, 450, 20)
+        >>> h1.get_alt_co_ef(8000)
+        0.0
+        >>> h1.get_alt_co_ef(15000)
+        0.05
+
         '''
         if a < 10000:
             return 0
@@ -76,7 +83,16 @@ class Helicopter:
         :param wd: Indicates the direction of wind
         :param hd: Indicates the direction of the helicopter
         :return: Returns the direction coefficient depending on the wind and the helicopter direction
+
+        >>> h1 = Helicopter("Kamov KA-52", 10000, 180, 450, 20)
+        >>> h1.get_relation_between_directions('N', 'N')
+        15
+        >>> h1.get_relation_between_directions('E', 'W')
+        -25
+        >>> h1.get_relation_between_directions('N', 'W')
+        -5
         '''
+
         if wd == hd:
             return 15
         elif (wd == 'N' and hd == 'S') or (wd == 'S' and hd == 'N') or (wd == 'E' and hd == 'W') or (
@@ -87,6 +103,17 @@ class Helicopter:
 
     @staticmethod
     def get_no_of_trips(heli_no_of_ppl, cond_max_no_of_ppl):
+        '''
+        Calculates the number of trips that the helicopter has to take to complete the rescue mission
+        :param heli_no_of_ppl: Maximum number of people that the helicopter can carry at once
+        :param cond_max_no_of_ppl: Maximum number of people that are involved in any emergency situation,
+        this value comes from the conditions file
+        :return: returns the number of trips that the helicopter will have to take
+
+        >>> h1 = Helicopter("Kamov KA-52", 10000, 180, 450, 20)
+        >>> h1.get_no_of_trips(20, 50)
+        3
+        '''
 
         trips = math.ceil(cond_max_no_of_ppl / heli_no_of_ppl)
 
@@ -95,10 +122,30 @@ class Helicopter:
     @staticmethod
     def caluclate_time(heli, condition_obj):
         '''
-        Calculates the time taken by the helicopter
+        Calculates the time taken by the helicopter to complete the trip
         :param heli: Instance of the class helicopter
         :param condition_obj: Condition object from the conditions file
         :return: Returns the time taken by the helicopter using speed and distance
+
+        >>> h1 = Helicopter("Kamov KA-52", 10000, 180, 450, 20)
+        >>> c1 = Condition(('1', '2', '3'))
+        >>> c1.distance = 300
+        >>> c1.number_of_people = 25
+        >>> c1.altitude = 15000
+        >>> c1.wind_speed = 15
+        >>> c1.wind_direction = 'N'
+        >>> c1.helicopter_direction = 'S'
+        >>> c1.weather = "Summer"
+        >>> we1 = h1.get_weather_co_ef("Summer") * h1.max_speed
+        >>> nop1 = h1.max_speed * (2 * 15) / 100
+        >>> a1 = h1.get_alt_co_ef(15000) * h1.max_speed
+        >>> do1 = h1.get_relation_between_directions('N','S')
+        >>> ws1 = ((do1 * 15 / 100) / (h1.empty_weight / 18000)) * 2
+        >>> s1 = h1.max_speed - nop1 - a1 - we1 + ws1
+        >>> t1 = 300 / s1
+        >>> tr1 = h1.get_no_of_trips(h1.max_no_people, 25)
+        >>> h1.caluclate_time(h1,c1)
+        6.35
         '''
 
         distance = condition_obj.distance
@@ -135,10 +182,10 @@ class Helicopter:
         '''
         Finding the helicopter which won the most number of times by sorting the time dictionary
         :param time_dict: Indicates the time values calculated from the calculate time function
-        :return: returns the winner which is the fastest performing helicopter
+        :return: returns the winner which has won the maximum number of times
+
         '''
 
-        print(sorted(time_dict.items()))
         winner = sorted(time_dict.items()[0][0], reverse=True)
         return winner
 
@@ -284,7 +331,6 @@ class Condition:
         self.get_number_of_people(max_number_of_people)
         self.get_altitude(min_altitude, max_altitude)
         self.get_wind_speed(wind_speed)
-
         self.get_wind_direction()
         self.get_helicopter_direction()
         self.get_weather()
