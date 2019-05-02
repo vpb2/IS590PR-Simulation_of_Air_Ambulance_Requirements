@@ -178,37 +178,33 @@ class Helicopter:
         wind_direction = condition_obj.wind_direction
         heli_direction = condition_obj.helicopter_direction
 
+        # Calculates how speed of helicopter is affected due to weather
         weather_co_ef = heli.get_weather_co_ef(weather) * heli.max_speed
 
+        # Calculates how speed of helicopter is affected due to number of people in it at the time
         no_of_ppl_co_ef = heli.max_speed * (2 * cond_max_no_of_ppl) / 100
 
+        # Calculates how speed of helicopter is affected by altitude
         alt_co_ef = heli.get_alt_co_ef(altitude) * heli.max_speed
 
+        # Calculates the relationship between direction of wind and direction of helicopter
         direction_offset = heli.get_relation_between_directions(wind_direction, heli_direction)
+        # Calculates how these two directions are contributing to the helicopter speed
         wind_speed_co_ef = ((direction_offset * wind_speed / 100) / (heli.empty_weight / 18000)) * 2
 
+        # Calculates the final speed of the helicopter at given conditions
         speed = max_speed - no_of_ppl_co_ef - alt_co_ef - weather_co_ef + wind_speed_co_ef
 
+        # Calculates time taken by the helicopter
         time = distance / speed
 
+        # Calculates the number of trips the helicopter has to take to complete the rescue mission
         trips = heli.get_no_of_trips(heli.max_no_people, cond_max_no_of_ppl)
 
         if trips == 1:
             return time
         else:
             return trips * time
-
-    @staticmethod
-    def get_winner_heli(time_dict):
-        '''
-        Finding the helicopter which won the most number of times by sorting the time dictionary
-        :param time_dict: Indicates the time values calculated from the calculate time function
-        :return: returns the winner which has won the maximum number of times
-
-        '''
-
-        winner = sorted(time_dict.items()[0][0], reverse=True)
-        return winner
 
     def reset_values(self):
         '''
@@ -249,8 +245,8 @@ class Condition:
 
     def set_weather_tendency(self, t: tuple):
         '''
-        Generates the inidividual tendencies of the weather
-        :param t: tuple which indicates the weather tendency
+        Generates the individual tendencies of the weather
+        :param t: tuple which indicates the weather tendency for Summer, Winter and Rainy
 
         '''
         if t is None:
@@ -266,7 +262,7 @@ class Condition:
 
     def get_weather(self):
         '''
-        Indicates the actual weather whether it is summer, rainy or winter
+        Indicates the actual weather if it is summer, rainy or winter
         '''
         n = randint(1, self.randmax)
         if n <= int(self.weather_tendency[0]):
@@ -300,8 +296,8 @@ class Condition:
     def get_altitude(self, min_altitude, max_altitude):
         '''
         Randomly generates an integer for altitude between the minimum and maximum altitude
-        :param min_altitude: minimum altitude at which the helicopter is required to fly from the conditions file
-        :param max_altitude: maximum altitude at which the helicopter is required to fly from the conditions file
+        :param min_altitude: minimum altitude at which the helicopter can fly from the conditions file
+        :param max_altitude: maximum altitude at which the helicopter can fly from the conditions file
 
         '''
         if min_altitude is None and max_altitude is None:
@@ -359,14 +355,18 @@ class Condition:
 
 if __name__ == "__main__":
 
+    #Input files: 1. Helicopter and 2. Conditions
+    #Loading the input files into DataFrames
     helicopter_df = pd.read_csv("Input_Helicopter_new.csv")
     condition_df = pd.read_csv("Conditions_file.csv")
 
+    #Creating Helicopter objects from Helicopter Dataframe
     for h in range(0,len(helicopter_df)):
         Helicopter(helicopter_df.iloc[h]['Name'], helicopter_df.iloc[h]['Empty_Weight(lbs)'],
                    helicopter_df.iloc[h]['Max_Speed(mph)'],
                    helicopter_df.iloc[h]['Max_Distance(miles)'], helicopter_df.iloc[h]['Max_no_of_people'])
 
+    #Setting the weather Tendency for the simulation to follow
     for c in range(len(condition_df)):
         tendency = tuple(condition_df.iloc[c]['Weather_Tendency'].split('-'))
         Condition(tendency)
@@ -375,24 +375,30 @@ if __name__ == "__main__":
 
         no_of_iters = int(input("\nPlease enter the number of simulations to be run: "))
 
-        if no_of_iters == 0:
+        if no_of_iters <= 0:
+            print("You cannot have 0 or negative iterations!!!")
             break
 
         i = 0
         for conds in Condition.all_conditions:
             for iters in range(no_of_iters):
 
+                #Get a condition object
                 conds.get_values_conditions(condition_df.iloc[i]['Distance'], condition_df.iloc[i]['Number_of_People'],
                                             condition_df.iloc[i]['MinAltitude'], condition_df.iloc[i]['MaxAltitude'],
                                             condition_df.iloc[i]['Wind_Speed'])
+
+                #Dictionary to store the time taken at every iteration
                 heli_time_dict = {}
                 for heli in Helicopter.all_helicopters:
                     time = Helicopter.caluclate_time(heli, conds)
                     heli_time_dict[heli.name] = time
 
+                #Sorting the dictionary to get the winner
                 sorted_heli_dict = sorted(heli_time_dict.items(), key=lambda x: x[1])
                 winner_heli = sorted_heli_dict[0][0]
 
+                #Increasing the win count for the winner helicopter
                 for heli in Helicopter.all_helicopters:
                     if heli.name == winner_heli:
                         heli.record_play()
@@ -414,13 +420,8 @@ if __name__ == "__main__":
 
             print("---------------------------------------------------------")
 
+            #Reset all values before starting the next condition
             for heli in Helicopter.all_helicopters:
                 heli.reset_values()
 
             i += 1
-
-
-
-
-
-
