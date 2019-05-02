@@ -18,11 +18,12 @@ Given the weather conditions, the range of the helicopter and the maximum speed 
 
 # Instructions regarding input file:
 Our program takes input as a csv file which has 5 columns namely: Name, Empty_Weight(lbs), Max_Speed(mph), Max_Distance(miles), Max_no_of_people
-Name: Name and Model of the helicopter
-Empty_Weight(lbs): Empty weight of the helicopter
-Max_Speed(mph): Maximum speed of the helicopter in miles per hour
-Max_Distance(miles): Maximum distance the helicopter can traverse in one fuel of tank
-Max_no_of_people: Maximum occupancy of the helicopter
+
+1. Name: Name and Model of the helicopter
+2. Empty_Weight(lbs): Empty weight of the helicopter
+3. Max_Speed(mph): Maximum speed of the helicopter in miles per hour
+4. Max_Distance(miles): Maximum distance the helicopter can traverse in one fuel of tank
+5. Max_no_of_people: Maximum occupancy of the helicopter
 
 # Results:
 1. The first hypotheses was proved wrong according to our simulation that given any weather condition, the fastest helicopter is not the optimal performing helicopter. In different weather conditions, the performance of the helicopter enhances or degrades depending upon the weather condition. In rainy condition, the moisture in the air is the most compared to summer and winter and thus it affects the speed of the helicopter and the fastest helicopter is not always the fastest helicopter.
