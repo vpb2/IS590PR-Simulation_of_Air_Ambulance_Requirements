@@ -21,7 +21,6 @@ class Helicopter:
     >>> h1 = Helicopter("Kamov KA-52", 10000, 180, 450, 20)
     >>> h1.record_play()
     >>> h1.reset_values()
-    0
     >>> h1.win_count = 20
     >>> h1.print_values(100)
                   Kamov KA-52         20            20.0
@@ -165,7 +164,7 @@ class Helicopter:
         >>> t1 = 300 / s1
         >>> tr1 = h1.get_no_of_trips(h1.max_no_people, 25)
         >>> h1.caluclate_time(h1,c1)
-        6.34920634
+        10.256410256410257
         '''
 
         distance = condition_obj.distance
