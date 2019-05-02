@@ -20,7 +20,6 @@ class Helicopter:
     '''
     >>> h1 = Helicopter("Kamov KA-52", 10000, 180, 450, 20)
     >>> h1.record_play()
-    1
     >>> h1.reset_values()
     0
     >>> h1.win_count = 20
@@ -87,7 +86,7 @@ class Helicopter:
 
         >>> h1 = Helicopter("Kamov KA-52", 10000, 180, 450, 20)
         >>> h1.get_alt_co_ef(8000)
-        0.0
+        0
         >>> h1.get_alt_co_ef(15000)
         0.05
 
@@ -149,7 +148,7 @@ class Helicopter:
         :return: Returns the time taken by the helicopter using speed and distance
 
         >>> h1 = Helicopter("Kamov KA-52", 10000, 180, 450, 20)
-        >>> c1 = Condition(('1', '2', '3'))
+        >>> c1 = Condition(('1', '1', '1'))
         >>> c1.distance = 300
         >>> c1.number_of_people = 25
         >>> c1.altitude = 15000
