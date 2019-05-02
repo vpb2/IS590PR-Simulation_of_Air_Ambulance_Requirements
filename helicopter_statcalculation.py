@@ -1,9 +1,9 @@
 """
 Simulation of Air Ambulance Requirements
-Uses basic Monte Carlo simulation techniques to derive statistical
-analysis of air ambulance requirements.
+Uses basic Monte Carlo simulation technique to gauge
+the optimal performing helicopter to cater air ambulance requirements.
 
-IS590PR
+IS590PR by Professor John Weible
 
 Simran Sanjiv Wig - swig2@illinois.edu
 Srijith Srinath - ssrina2@illinois.edu
@@ -16,16 +16,26 @@ import pandas as pd
 import math
 
 class Helicopter:
-    all_helicopters = []  # automatically track all helicopters
+
+    '''
+    >>> h1 = Helicopter("Kamov KA-52", 10000, 180, 450, 20)
+    >>> h1.record_play()
+    1
+    >>> h1.reset_values()
+    0
+    >>>
+    '''
+
+    all_helicopters = []  # Tracks all helicopters
 
     def __init__(self, name=None, empty_weight=None, max_speed=None, max_distance=None, max_no_people=None):
         '''
-        initializes all the parameters for the class helicopter
+        Initializes all the parameters for the class helicopter
         :param name: Name of the helicopter
         :param empty_weight: Empty weight of the helicopter
         :param max_speed: Maximum speed the helicopter can traverse at
-        :param max_distance: Maximmum distance the helicopter can cover
-        :param max_no_people: Maximum number of people the helicopter can carry
+        :param max_distance: Maximmum distance the helicopter can cover in one full tank of fuel
+        :param max_no_people: Maximum number of people the helicopter can carry in one trip
         '''
 
         Helicopter.all_helicopters.append(self)
@@ -46,9 +56,17 @@ class Helicopter:
     @staticmethod
     def get_weather_co_ef(w):
         '''
-        Calculates the weather coefficient for every weather to be used in  speed calculation
-        :param w: Indicates the weather which can be summer, rainy or winter
+        Calculates the weather coefficient for every weather to be used in speed calculation
+        :param w: Indicates the tendency of weather which can be summer, rainy or winter
         :return: Returns the weather coefficient used in speed calculation depending on the weather
+
+        >>> h1 = Helicopter("Kamov KA-52", 10000, 180, 450, 20)
+        >>> h1.get_weather_co_ef("Summer")
+        0.05
+        >>> h1.get_weather_co_ef("Winter")
+        0
+        >>> h1.get_weather_co_ef("Rainy")
+        0.1
         '''
         if w == "Summer":
             return 0.05
