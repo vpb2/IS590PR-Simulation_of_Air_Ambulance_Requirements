@@ -165,7 +165,7 @@ class Helicopter:
         >>> t1 = 300 / s1
         >>> tr1 = h1.get_no_of_trips(h1.max_no_people, 25)
         >>> h1.caluclate_time(h1,c1)
-        6.35
+        6.34920634
         '''
 
         distance = condition_obj.distance
