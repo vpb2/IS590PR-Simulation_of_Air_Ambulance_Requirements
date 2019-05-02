@@ -23,7 +23,10 @@ class Helicopter:
     1
     >>> h1.reset_values()
     0
-    >>>
+    >>> h1.win_count = 20
+    >>> h1.print_values(100)
+                  Kamov KA-52         20            20.0
+
     '''
 
     all_helicopters = []  # Tracks all helicopters
