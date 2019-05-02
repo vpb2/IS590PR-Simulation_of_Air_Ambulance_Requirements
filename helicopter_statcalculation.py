@@ -156,12 +156,12 @@ class Helicopter:
         >>> c1.helicopter_direction = 'S'
         >>> c1.weather = "Summer"
         >>> we1 = h1.get_weather_co_ef("Summer") * h1.max_speed
-        >>> nop1 = h1.max_speed * (2 * 15) / 100
-        >>> a1 = h1.get_alt_co_ef(15000) * h1.max_speed
-        >>> do1 = h1.get_relation_between_directions('N','S')
-        >>> ws1 = ((do1 * 15 / 100) / (h1.empty_weight / 18000)) * 2
+        >>> nop1 = h1.max_speed * (2 * c1.number_of_people) / 100
+        >>> a1 = h1.get_alt_co_ef(c1.altitude) * h1.max_speed
+        >>> do1 = h1.get_relation_between_directions(c1.wind_direction,c1.helicopter_direction)
+        >>> ws1 = ((do1 * c1.wind_speed / 100) / (h1.empty_weight / 18000)) * 2
         >>> s1 = h1.max_speed - nop1 - a1 - we1 + ws1
-        >>> t1 = 300 / s1
+        >>> t1 = c1.distance / s1
         >>> tr1 = h1.get_no_of_trips(h1.max_no_people, 25)
         >>> h1.caluclate_time(h1,c1)
         10.256410256410257
