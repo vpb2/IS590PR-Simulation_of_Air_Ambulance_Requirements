@@ -1,0 +1,27 @@
+command line input: -h
+*****************************************************************************
+
+#############################################################################
+#
+# Script to run Manta on a normal and tumor bam file
+#
+#############################################################################
+ USAGE:
+ manta.sh   -s      <sample_name>
+            -N      <normal_bam>
+            -T      <tumor_bam>
+            -g      <reference_genome_fasta>
+            -M      <MantaSV_install_path>
+            -t      <Number_of_threads>
+            -e      <path/to/evn_profile_file>
+            -F      <shared_functions>
+            -d      Turn on debug mode
+            -h      Display this usage/help text(No arg)
+
+EXAMPLES:
+manta.sh -h
+manta.sh -s sample_name -N normal.bam -T tumor.bam -g reference_genome.fasta -M /path/to/manta/install -t Number_of_threads -e path/to/env_profile_file -F /path/to/MayomicsVC/shared_functions.sh -d
+
+NOTES:
+
+#############################################################################
